@@ -1,0 +1,61 @@
+<html>
+<head>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/prototype/1.6.1.0/prototype.js"></script>
+
+<script type="text/javascript">
+function initUpdaters() {
+    new Ajax.PeriodicalUpdater('predictions', 'predictions.py', {frequency:60});
+    //Ajax.Responders.register({onComplete: layoutManager.resize.bind(layoutManager)});
+}
+document.observe('dom:loaded', initUpdaters);
+</script>
+
+<style type="text/css">
+body {
+    font-family: Helvetica, Arial, sans-serif;
+    background: black;
+    color: white;
+    margin: 0;
+    padding: 0;
+}
+#map {
+    position: absolute;
+    left: -140px;
+    width: 1206px;
+    height: 768px;
+}
+#predictions {
+    position: absolute;
+    width: 300px;
+    top: 0px;
+    left: 1066px;
+    text-align: center;
+}
+
+#predictions h1 {
+    font-size: 20pt;
+    font-weight: normal;
+}
+#predictions table h1 {
+    margin: 0;
+    padding: 0;
+}
+#predictions table td {
+    text-align: center;
+}
+#predictions .big {
+    font-size: 26pt;
+}
+#predictions .small {
+    font-size: 16pt;
+}
+</style>
+<title>SafeRide TV</title>
+</head>
+<body>
+<iframe id="map" src="http://www.nextbus.com/googleMap/googleMap.jsp?a=mit&r=boston&r=northwest&r=tech&r=saferidebostone&r=saferidebostonw&r=saferidecambeast&r=saferidecambwest"></iframe>
+<div id="predictions">
+<h1>Loading</h1>
+</div>
+</body>
+</html>
