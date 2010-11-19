@@ -3,6 +3,7 @@
 import urllib
 import re
 import time
+import sys
 from lxml.etree import ElementTree
 
 stops = """boston|boston|mass84_d
@@ -25,8 +26,9 @@ def timeandweather():
         '<img src="http://www.google.com%s" /><h1>%s&deg;F</h1>' % (cond.find("icon").get("data"), cond.find("temp_f").get("data")) + \
         "</td></tr></table>"
 
-
-f = urllib.urlopen("http://www.nextbus.com/service/publicXMLFeed?command=predictionsForMultiStops&a=mit&stops="+"&stops=".join(stops))
+url="http://www.nextbus.com/service/publicXMLFeed?command=predictionsForMultiStops&a=mit&stops="+"&stops=".join(stops)
+print >>sys.stderr, url
+f = urllib.urlopen(url)
 
 e = ElementTree(file=f)
 
