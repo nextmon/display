@@ -40,6 +40,9 @@ print
 print """<html>
 <head>
 <title>Current Predictions</title>
+<style type="text/css">
+body { background: black; color: white }
+</style>
 </head>
 <body>"""
 print timeandweather()
