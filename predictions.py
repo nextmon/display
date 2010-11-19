@@ -6,9 +6,9 @@ import time
 import sys
 from lxml.etree import ElementTree
 
+# tech shuttle tracking is broken: tech|wcamp|mass84
 stops = """boston|boston|mass84_d
 northwest|nwcamp|mass77
-tech|wcamp|mass84
 saferidebostone|boston|mass84_d
 saferidebostonw|boston|mass84_d
 saferidecambeast|frcamp|mass84_d
