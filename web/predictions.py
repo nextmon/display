@@ -12,6 +12,7 @@ saferide_stops = """boston|boston|mass84_d
 northwest|nwcamp|mass77
 saferidebostone|boston|mass84_d
 saferidebostonw|boston|mass84_d
+saferidebostonall|mass84|mass77
 saferidecambeast|frcamp|mass84_d
 saferidecambwest|frcamp|mass84_d""".split()
 
