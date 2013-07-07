@@ -41,9 +41,9 @@ def timeandweather():
 def minutes(n):
     n = int(n)
     if n == 1:
-        return "1 minute"
+        return "1 min"
     else:
-        return "%s minutes" % n
+        return "%s mins" % n
 
 def print_predictions(agency, stops, label=""):
     url = "http://webservices.nextbus.com/service/publicXMLFeed?command=predictionsForMultiStops&a=" + agency
