@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# We could also grab the display with
+# strings /proc/$(pgrep -u nextmon -f http://nextmon.scripts.mit.edu/display)/environ | grep DISPLAY
+# or so, but that seems a little sketchy...
+export DISPLAY=:1
+
+# We want to both unlock and wake the display. Neither of these commands work
+# on their own.
+gnome-screensaver-command  --deactivate
+xset dpms force on
