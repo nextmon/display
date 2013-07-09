@@ -10,7 +10,6 @@ from StringIO import StringIO
 
 import cgi
 import cgitb
-cgitb.enable()
 form = cgi.FieldStorage()
 
 all_stops = (
