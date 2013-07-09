@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import urllib
 import re
@@ -8,16 +9,18 @@ from lxml.etree import ElementTree, parse
 from StringIO import StringIO
 
 # tech shuttle tracking is broken: tech|wcamp|mass84
-saferide_stops = """boston|boston|mass84_d
-northwest|nwcamp|mass77
-saferidebostone|boston|mass84_d
-saferidebostonw|boston|mass84_d
-saferidebostonall|mass84|mass77
-saferidecambeast|frcamp|mass84_d
-saferidecambwest|frcamp|mass84_d""".split()
+saferide_stops = (
+    ("Boston Daytime", "boston|boston|mass84_d", ),
+    ("Northwest Shuttle", "northwest|nwcamp|mass77", ),
+    ("Boston East", "saferidebostone|boston|mass84_d", ),
+    ("Boston West", "saferidebostonw|boston|mass84_d", ),
+    ("Boston All (West)", "saferidebostonall|boston|mass84", ),
+    ("Cambridge East", "saferidecambeast|frcamp|mass84_d", ),
+    ("Cambridge West", "saferidecambwest|frcamp|mass84_d", ),
+)
 
 mbta_stops = (
-    "1|1_0_var0|97",
+    ("MBTA 1 (→ Cambridge)", "1|1_0_var0|97", ),
 )
 
 def timeandweather():
@@ -48,7 +51,7 @@ def minutes(n):
 
 def print_predictions(agency, stops, label=""):
     url = "http://webservices.nextbus.com/service/publicXMLFeed?command=predictionsForMultiStops&a=" + agency
-    url += "".join(["&stops="+s for s in stops])
+    url += "".join("&stops="+s for t,s in stops)
     print >>sys.stderr, url
     f = urllib.urlopen(url)
 
@@ -58,11 +61,12 @@ def print_predictions(agency, stops, label=""):
     predictions = filter(lambda el: el.find(".//prediction") is not None, predictions)
     predictions.sort(key=lambda el: el.find(".//prediction").get("epochTime"))
 
-    for p in predictions:
+    for n, p in enumerate(predictions):
         title = p.get("routeTitle")
         title = re.sub(r'^Saferide ', '', title)
         title = label + title
         print "<h1>"+title+"</h1>"
+        #print "<h1>"+stops[n][0]+"</h1>"
         times = p.findall(".//prediction")
         print '<div class="big">%s</div>' % minutes(times.pop(0).get("minutes"))
         for t in times[0:2]:
