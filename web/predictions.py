@@ -8,19 +8,26 @@ import sys
 from lxml.etree import ElementTree, parse
 from StringIO import StringIO
 
-# tech shuttle tracking is broken: tech|wcamp|mass84
-saferide_stops = (
-    ("Boston Daytime", "boston|boston|mass84_d", ),
-    ("Northwest Shuttle", "northwest|nwcamp|mass77", ),
-    ("Boston East", "saferidebostone|boston|mass84_d", ),
-    ("Boston West", "saferidebostonw|boston|mass84_d", ),
-    ("Boston All (West)", "saferidebostonall|boston|mass84", ),
-    ("Cambridge East", "saferidecambeast|frcamp|mass84_d", ),
-    ("Cambridge West", "saferidecambwest|frcamp|mass84_d", ),
-)
+import cgi
+import cgitb
+cgitb.enable()
+form = cgi.FieldStorage()
 
-mbta_stops = (
-    ("MBTA 1 (→ Cambridge)", "1|1_0_var0|97", ),
+all_stops = (
+    ('mit', "", (
+        # tech shuttle tracking is broken: tech|wcamp|mass84
+        ("Boston Daytime", "boston|boston|mass84_d", ),
+        ("Northwest Shuttle", "northwest|nwcamp|mass77", ),
+        ("Boston East", "saferidebostone|boston|mass84_d", ),
+        ("Boston West", "saferidebostonw|boston|mass84_d", ),
+        ("Boston All (West)", "saferidebostonall|boston|mass84", ),
+        ("Cambridge East", "saferidecambeast|frcamp|mass84_d", ),
+        ("Cambridge West", "saferidecambwest|frcamp|mass84_d", ),
+        ("Cambridge All (West)", "saferidecamball|frcamp|mass84_d", ),
+    ), ),
+    ('mbta', "MBTA ", (
+        ("MBTA 1 (→ Cambridge)", "1|1_0_var0|97", ),
+    ), ),
 )
 
 def timeandweather():
@@ -49,9 +56,13 @@ def minutes(n):
     else:
         return "%s mins" % n
 
-def print_predictions(agency, stops, label=""):
+def build_url(agency, stops):
     url = "http://webservices.nextbus.com/service/publicXMLFeed?command=predictionsForMultiStops&a=" + agency
     url += "".join("&stops="+s for t,s in stops)
+    return url
+
+def print_predictions(agency, stops, label=""):
+    url = build_url(agency, stops)
     print >>sys.stderr, url
     f = urllib.urlopen(url)
 
@@ -85,8 +96,14 @@ body { background: black; color: white }
 <body>"""
 print timeandweather()
 
-print_predictions('mit', saferide_stops)
-print_predictions('mbta', mbta_stops, label="MBTA ")
+for agency, label, stops in all_stops:
+    print_predictions(agency, stops, label, )
+
+if 'urls' in form:
+    print "<div class='small'><ul>"
+    for agency, label, stops in all_stops:
+        print "<li><a href='%s'>%s</a></li>" % (build_url(agency, stops), agency)
+    print "</ul></div>"
 
 print """</body>
 </html>"""
