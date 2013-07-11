@@ -14,6 +14,9 @@ form = cgi.FieldStorage()
 
 import config
 
+def debug(string):
+    print >>sys.stderr, string
+
 def timeandweather():
     # If this ever dies, there's always Microsoft:
     # http://weather.service.msn.com/find.aspx?outputview=search&src=Windows7&weasearchstr=02139&weadegreetype=F&culture=en-US
@@ -45,9 +48,24 @@ def build_url(agency, stops):
     url += "".join("&stops="+s for t,s in stops)
     return url
 
+def build_title_index(stops):
+    index = {}
+    for title, descriptor in stops:
+        route, direction, stop = descriptor.split("|")
+        if (route, stop) in index:
+            debug("Minimal NextBus pair: (%s, %s) is %s and %s" % (
+                route, stop, index[route,stop], title,
+            ))
+            index[route,stop] = False
+        else:
+            index[route,stop] = title
+    return index
+
 def print_predictions(agency, stops, label=""):
+    title_index = build_title_index(stops)
     url = build_url(agency, stops)
-    print >>sys.stderr, url
+
+    debug("NextBus predictions for %s: %s" % (agency, url))
     f = urllib.urlopen(url)
 
     e = ElementTree(file=f)
@@ -57,11 +75,17 @@ def print_predictions(agency, stops, label=""):
     predictions.sort(key=lambda el: el.find(".//prediction").get("epochTime"))
 
     for n, p in enumerate(predictions):
-        title = p.get("routeTitle")
-        title = re.sub(r'^Saferide ', '', title)
-        title = label + title
+        routeTag = p.get("routeTag")
+        stopTag = p.get("stopTag")
+        title = title_index.get((routeTag, stopTag), False)
+        if title:
+            title = "<em>%s</em>" % (title.replace("\n", "<br>"), )
+        else:
+            title = p.get("routeTitle")
+            title = re.sub(r'^Saferide ', '', title)
+            title = label + title
+
         print "<h2>"+title+"</h2>"
-        #print "<h1>"+stops[n][0]+"</h1>"
         times = p.findall(".//prediction")
         print "<ol class='predictions'>"
         print '<li>%s</li>' % minutes(times.pop(0).get("minutes"))
@@ -71,7 +95,6 @@ def print_predictions(agency, stops, label=""):
 
 def print_hubway(locationID, label=None):
     url = "http://thehubway.com/data/stations/bikeStations.xml"
-    print >>sys.stderr, "Hubway", url
     f = urllib.urlopen(url)
 
     e = ElementTree(file=f)
@@ -88,7 +111,7 @@ def print_hubway(locationID, label=None):
     tmpl = "<h2>%s</h2><img src=\"http://chart.apis.google.com/chart?chf=bg,s,65432100&amp;chs=175x87&amp;cht=p&amp;chdl=bikes%%3a%%20%d|docks%%3a%%20%d&amp;chco=6BC533|6A747C&amp;chd=t:%d,%d\">"
     print tmpl % (name, bikes, empty, bikes, empty)
 
-print "Content-type: text/html"
+print "Content-type: text/html; charset=utf-8"
 print
 
 print """<html>

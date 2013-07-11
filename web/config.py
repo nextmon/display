@@ -7,10 +7,10 @@ all_stops = (
         ("Northwest Shuttle", "northwest|nwcamp|mass77", ),
         ("Boston East", "saferidebostone|boston|mass84_d", ),
         ("Boston West", "saferidebostonw|boston|mass84_d", ),
-        ("Boston All (West)", "saferidebostonall|boston|mass84", ),
+        ("Boston All\n(→ West)", "saferidebostonall|boston|mass84", ),
         ("Cambridge East", "saferidecambeast|frcamp|mass84_d", ),
         ("Cambridge West", "saferidecambwest|frcamp|mass84_d", ),
-        ("Cambridge All (West)", "saferidecamball|frcamp|mass84_d", ),
+        ("Cambridge All\n(→ West)", "saferidecamball|frcamp|mass84_d", ),
     ), ),
     ('mbta', "MBTA ", (
         ("MBTA 1 (→ Cambridge)", "1|1_0_var0|97", ),
