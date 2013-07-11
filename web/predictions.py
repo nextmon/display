@@ -29,6 +29,10 @@ all_stops = (
     ), ),
 )
 
+hubway_stations = (
+    (67), #MIT at Mass Ave / Amherst St
+)
+
 def timeandweather():
     # If this ever dies, there's always Microsoft:
     # http://weather.service.msn.com/find.aspx?outputview=search&src=Windows7&weasearchstr=02139&weadegreetype=F&culture=en-US
@@ -84,6 +88,23 @@ def print_predictions(agency, stops, label=""):
             print '<li>%s</li>' % minutes(t.get("minutes"))
         print "</ol>"
 
+def print_hubway(locationID):
+    url = "http://thehubway.com/data/stations/bikeStations.xml"
+    print >>sys.stderr, url
+    f = urllib.urlopen(url)
+
+    e = ElementTree(file=f)
+
+    stations = e.findall("//station")
+    stations = filter(lambda x: int(x.find("id").text) == locationID, stations)
+
+    for station in stations:
+        name = station.find("name").text
+        bikes = int(station.find("nbBikes").text)
+        empty = int(station.find("nbEmptyDocks").text)
+        total = bikes + empty
+        print "<h4>%s</h4><img src=\"http://chart.apis.google.com/chart?chf=bg,s,65432100&amp;chs=175x87&amp;cht=p&amp;chdl=bikes%%3a%%20%d|docks%%3a%%20%d&amp;chco=6BC533|6A747C&amp;chd=t:%d,%d\">" % (name, bikes, empty, bikes, empty)
+
 print "Content-type: text/html"
 print
 
@@ -100,6 +121,9 @@ print timeandweather()
 print "<div class='routes'>"
 for agency, label, stops in all_stops:
     print_predictions(agency, stops, label, )
+
+for lid in hubway_stations:
+    print_hubway(lid)
 
 if 'urls' in form:
     print "<ul>"
