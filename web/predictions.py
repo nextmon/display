@@ -12,27 +12,7 @@ import cgi
 import cgitb
 form = cgi.FieldStorage()
 
-all_stops = (
-    ('mit', "", (
-        # tech shuttle tracking is broken: tech|wcamp|mass84
-        ("Boston Daytime", "boston|boston|mass84_d", ),
-        ("Northwest Shuttle", "northwest|nwcamp|mass77", ),
-        ("Boston East", "saferidebostone|boston|mass84_d", ),
-        ("Boston West", "saferidebostonw|boston|mass84_d", ),
-        ("Boston All (West)", "saferidebostonall|boston|mass84", ),
-        ("Cambridge East", "saferidecambeast|frcamp|mass84_d", ),
-        ("Cambridge West", "saferidecambwest|frcamp|mass84_d", ),
-        ("Cambridge All (West)", "saferidecamball|frcamp|mass84_d", ),
-    ), ),
-    ('mbta', "MBTA ", (
-        ("MBTA 1 (→ Cambridge)", "1|1_0_var0|97", ),
-        ("MBTA 1 (→ Boston)", "1|1_1_var0|75", ),
-    ), ),
-)
-
-hubway_stations = (
-    (67, "MIT (Bexley)", ), #MIT at Mass Ave / Amherst St
-)
+import config
 
 def timeandweather():
     # If this ever dies, there's always Microsoft:
@@ -122,15 +102,15 @@ body { background: black; color: white }
 print timeandweather()
 
 print "<div class='routes'>"
-for agency, label, stops in all_stops:
+for agency, label, stops in config.all_stops:
     print_predictions(agency, stops, label, )
 
-for lid, label in hubway_stations:
+for lid, label in config.hubway_stations:
     print_hubway(lid, label)
 
 if 'urls' in form:
     print "<ul>"
-    for agency, label, stops in all_stops:
+    for agency, label, stops in config.all_stops:
         print "<li><a href='%s'>%s</a></li>" % (build_url(agency, stops), agency)
     print "</ul>"
 
