@@ -34,23 +34,37 @@ body {
     text-align: center;
 }
 
-#predictions h1 {
+#predictions .routes h2:first-child {
+    padding-top: 0;
+}
+
+#predictions h2 {
     font-size: 20pt;
     font-weight: normal;
+    padding-top: 1em;
+    margin-top: 1em;
+    margin-bottom: 0;
 }
-#predictions table h1 {
+#predictions .weather h2 {
     margin: 0;
     padding: 0;
 }
-#predictions table td {
+#predictions .weather td {
     text-align: center;
 }
-#predictions .big {
-    font-size: 48pt;
+ol.predictions {
+    margin-top: 0;
+    padding: 0;
 }
-#predictions .small {
+ol.predictions li {
+    display: block;
+    margin: 0;
     font-size: 16pt;
 }
+ol.predictions li:first-child {
+    font-size: 48pt;
+}
+
 </style>
 <title>SafeRide TV</title>
 </head>

@@ -42,10 +42,10 @@ def timeandweather():
     img = parse(StringIO("<doc>%s</doc>" % img)).find(".//img").get("src")
 
     # cond.get("text") is nice too
-    return '<table align="center" cellspacing="20"><tr><td>' + \
-        "<h1>"+time.strftime("%l:%M %p<br />%b %e")+"</h1>" + \
+    return '<table class="weather" align="center" cellspacing="20"><tr><td>' + \
+        "<h2>"+time.strftime("%l:%M %p<br />%b %e")+"</h2>" + \
         "</td><td>" + \
-        '<img src="%s" /><h1>%s&deg;F</h1>' % (img, cond.get("temp")) + \
+        '<img src="%s" /><h2>%s&deg;F</h2>' % (img, cond.get("temp")) + \
         "</td></tr></table>"
 
 def minutes(n):
@@ -75,12 +75,14 @@ def print_predictions(agency, stops, label=""):
         title = p.get("routeTitle")
         title = re.sub(r'^Saferide ', '', title)
         title = label + title
-        print "<h1>"+title+"</h1>"
+        print "<h2>"+title+"</h2>"
         #print "<h1>"+stops[n][0]+"</h1>"
         times = p.findall(".//prediction")
-        print '<div class="big">%s</div>' % minutes(times.pop(0).get("minutes"))
+        print "<ol class='predictions'>"
+        print '<li>%s</li>' % minutes(times.pop(0).get("minutes"))
         for t in times[0:2]:
-            print '<div class="small">%s</div>' % minutes(t.get("minutes"))
+            print '<li>%s</li>' % minutes(t.get("minutes"))
+        print "</ol>"
 
 print "Content-type: text/html"
 print
@@ -95,14 +97,17 @@ body { background: black; color: white }
 <body>"""
 print timeandweather()
 
+print "<div class='routes'>"
 for agency, label, stops in all_stops:
     print_predictions(agency, stops, label, )
 
 if 'urls' in form:
-    print "<div class='small'><ul>"
+    print "<ul>"
     for agency, label, stops in all_stops:
         print "<li><a href='%s'>%s</a></li>" % (build_url(agency, stops), agency)
-    print "</ul></div>"
+    print "</ul>"
+
+print "</div>"
 
 print """</body>
 </html>"""
