@@ -30,7 +30,7 @@ all_stops = (
 )
 
 hubway_stations = (
-    (67), #MIT at Mass Ave / Amherst St
+    (67, "MIT (Bexley)", ), #MIT at Mass Ave / Amherst St
 )
 
 def timeandweather():
@@ -88,22 +88,24 @@ def print_predictions(agency, stops, label=""):
             print '<li>%s</li>' % minutes(t.get("minutes"))
         print "</ol>"
 
-def print_hubway(locationID):
+def print_hubway(locationID, label=None):
     url = "http://thehubway.com/data/stations/bikeStations.xml"
-    print >>sys.stderr, url
+    print >>sys.stderr, "Hubway", url
     f = urllib.urlopen(url)
 
     e = ElementTree(file=f)
 
     stations = e.findall("//station")
     stations = filter(lambda x: int(x.find("id").text) == locationID, stations)
+    assert len(stations) == 1
+    station = stations[0]
 
-    for station in stations:
-        name = station.find("name").text
-        bikes = int(station.find("nbBikes").text)
-        empty = int(station.find("nbEmptyDocks").text)
-        total = bikes + empty
-        print "<h4>%s</h4><img src=\"http://chart.apis.google.com/chart?chf=bg,s,65432100&amp;chs=175x87&amp;cht=p&amp;chdl=bikes%%3a%%20%d|docks%%3a%%20%d&amp;chco=6BC533|6A747C&amp;chd=t:%d,%d\">" % (name, bikes, empty, bikes, empty)
+    name = label or station.find("name").text
+    bikes = int(station.find("nbBikes").text)
+    empty = int(station.find("nbEmptyDocks").text)
+    total = bikes + empty
+    tmpl = "<h2>%s</h2><img src=\"http://chart.apis.google.com/chart?chf=bg,s,65432100&amp;chs=175x87&amp;cht=p&amp;chdl=bikes%%3a%%20%d|docks%%3a%%20%d&amp;chco=6BC533|6A747C&amp;chd=t:%d,%d\">"
+    print tmpl % (name, bikes, empty, bikes, empty)
 
 print "Content-type: text/html"
 print
@@ -122,8 +124,8 @@ print "<div class='routes'>"
 for agency, label, stops in all_stops:
     print_predictions(agency, stops, label, )
 
-for lid in hubway_stations:
-    print_hubway(lid)
+for lid, label in hubway_stations:
+    print_hubway(lid, label)
 
 if 'urls' in form:
     print "<ul>"
