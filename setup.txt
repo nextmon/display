@@ -1,0 +1,21 @@
+- Create a user ("nextmon") to display the predictions
+    - Ideally, set up lightdm to autologin your "nextmon" user --- I couldn't
+      get this to work, though.
+- In the GNOME/Unity settings
+    - Go to "Startup Applications" and add "firefox
+      http://nextmon.scripts.mit.edu/display/" to the list of applications run
+      on startup
+    - Go to "Brightness and Lock", and update the settings appropriately. You
+      probably want to turn off "Lock", and may want to change the "Turn off
+      screen when inactive for..." setting to "never".
+    - In "Appearance" -> "Behavior", set "Autohide the launcher" to "ON".
+- In Firefox, select "View" -> "Full Screen" (F11)
+- Tweak the width of the map in the HTML source
+- If you want to set up remctl'd screen unblanking
+    - Check out the repo in /etc/nextmon-display/
+    - Install remctl-server 3.1 or later. On a Precise machine:
+        - Add quantal to your sources.list
+        - Symlink /etc/nextmon-display/local/apt-pin.conf into
+          /etc/apt/preferences.d/
+        - apt-get update && apt-get install remctl-server
+    - Symlink /etc/nextmon-display/local/remctl.conf into /etc/remctl/conf.d/
