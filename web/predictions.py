@@ -26,6 +26,7 @@ all_stops = (
     ), ),
     ('mbta', "MBTA ", (
         ("MBTA 1 (→ Cambridge)", "1|1_0_var0|97", ),
+        ("MBTA 1 (→ Boston)", "1|1_1_var0|75", ),
     ), ),
 )
 
